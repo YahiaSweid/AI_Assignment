@@ -41,39 +41,61 @@ namespace AI {
             
             if (currentTool == Tool.CIRCLE) {
                 int value = random.Next(0, 9);
-                g.DrawEllipse(new Pen(Color.Black), e.Location.X, e.Location.Y, 40, 40);
+                int radius = 40;
+                g.DrawEllipse(new Pen(Color.Black), e.Location.X, e.Location.Y, radius, radius);
                 g.DrawString(nodesCounter.ToString(), new Font("Times New Roman", 12), new SolidBrush(Color.Black), new Point(e.Location.X + 12, e.Location.Y + 12));
-                graph.addNode(new Graph.Node(e.Location, value, 40));
+                graph.addNode(new Graph.Node(e.Location, value, radius));
                 nodesCounter++;
             } else if (currentTool == Tool.LINE) {
+                bool foundPoint = false;
                 if (firstPoint.X == 0 && firstPoint.Y == 0) {
                     firstPoint = new Point(e.Location.X, e.Location.Y);
-                    for (int i = 0; i < graph.nodes.Count; i++) {
-                        if (graph.pointInsideNode(firstPoint, graph.nodes[i].location, graph.nodes[i].radius)) {
-                            Graph.Node n = graph.getNodeByLocation(firstPoint);
-                            if (n.radius != 0 ) {
-                                // TODO: Add the First Point of the Edge
-                                MessageBox.Show("the Point is inside the node and we get it");
+                    if (graph.nodes.Count > 1) {
+                        for (int i = 0; i < graph.nodes.Count; i++) {
+                            if (graph.pointInsideNode(firstPoint, graph.nodes[i].location, graph.nodes[i].radius)) {
+                                Graph.Node n = graph.getNodeByLocation(firstPoint);
+                                if (n.radius != 0) {
+                                    // TODO: Add the First Point of the Edge
+                                    txtStatus.Text = "the Point is inside the node and we get it";
+                                    foundPoint = true;
+                                    break;
+                                }
+                            } else {
+                                foundPoint = false;
+                                txtStatus.Text = "First point didn't hit any node";
                             }
                         }
+                    } else {
+                        firstPoint = new Point(0, 0);
+                        txtStatus.Text = "Please add two nodes at least";
                     }
+                    if (!foundPoint)
+                        firstPoint = new Point(0, 0);
                } else {
                     secondPoint = new Point(e.Location.X, e.Location.Y);
                     for (int i = 0; i < graph.nodes.Count; i++) {
                         if (graph.pointInsideNode(secondPoint, graph.nodes[i].location, graph.nodes[i].radius)) {
-                            Graph.Node n = graph.getNodeByLocation(firstPoint);
+                            Graph.Node n = graph.getNodeByLocation(secondPoint);
                             if (n.radius != 0) {
                                 // TODO: Add the Second Point of the Edge
-                                MessageBox.Show("the Point is inside the node and we get it");
+                                txtStatus.Text = "the Point is inside the node and we get it";
+                                foundPoint = true;
+                                break;
                             }
+                        } else {
+                            foundPoint = false;
+                            txtStatus.Text = "Second point didn't hit any node";
                         }
                     }
-                    g.DrawLine(new Pen(Color.Black), firstPoint, secondPoint);
-                    edgesCounter++;
-                    
-                    // Clear everything
-                    firstPoint = new Point(0, 0);
-                    secondPoint = new Point(0, 0);
+                    if (foundPoint) {
+                        g.DrawLine(new Pen(Color.Black), firstPoint, secondPoint);
+                        edgesCounter++;
+                        // TODO: Add Edge
+
+                        // Clear everything
+                        firstPoint = new Point(0, 0);
+                        secondPoint = new Point(0, 0);
+                    }
                 }
             }
         }
@@ -111,9 +133,20 @@ namespace AI {
             
         }
 
-        private void Form1_Paint (object sender, PaintEventArgs e) {
-            
+
+        private void btnNodes_Click (object sender, EventArgs e) {
+            String nodes = "";
+            for (int i = 0; i < graph.nodes.Count; i++) {
+                nodes += " Node ("+i+"):\n"+
+                         "Location: " + graph.nodes[i].location.ToString() + 
+                         "\n Radius: " + graph.nodes[i].radius.ToString() + "\n";
+            }
+            if(nodes != "")
+                MessageBox.Show(nodes);
+            else
+                MessageBox.Show("You do not have nodes");
         }
+
 
 
     }
