@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 namespace AI {
     public class Graph {
         public struct Node {
+
             public int radius;
             public Point location;
+
             public int value;
             public List<int> edges;
             
@@ -50,17 +52,26 @@ namespace AI {
 
         public void addEdge (int first_node, int second_node) {
             edges.Add(new Edge(first_node, second_node));
-            nodes[first_node].edges.Add(edges.Count - 1);
-            nodes[second_node].edges.Add(edges.Count - 1);
+            nodes[first_node].edges.Add(second_node);
+            nodes[second_node].edges.Add(first_node);
         }
 
         public Node getNode (int index) {
             return nodes[index];
         }
 
+        public int getNodeId (Node node) {
+            for (int i = 0; i < nodes.Count; i++) {
+                if (node.location == nodes[i].location)
+                    return i;
+            }
+            return -1;
+        }
+
         public Edge getEdge (int index) {
             return edges[index];
         }
+
 
         public Node getNodeByLocation (Point location) {
             for (int i = 0; i < nodes.Count; i++) {
@@ -71,6 +82,7 @@ namespace AI {
             return new Node(new Point(0, 0), 0, 0);
         }
 
+        
 
         public bool pointInsideNode (Point point, Point nodeLocation, int radius) {
             return (point.X - nodeLocation.X) * (point.X - nodeLocation.X) +

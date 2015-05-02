@@ -39,6 +39,8 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.txtStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.txtResult = new System.Windows.Forms.Label();
+            this.btnDFS = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -47,7 +49,7 @@
             this.btnCircle.Location = new System.Drawing.Point(12, 77);
             this.btnCircle.Name = "btnCircle";
             this.btnCircle.Size = new System.Drawing.Size(59, 57);
-            this.btnCircle.TabIndex = 0;
+            this.btnCircle.TabIndex = 1;
             this.btnCircle.Text = "Circle";
             this.btnCircle.UseVisualStyleBackColor = true;
             this.btnCircle.Click += new System.EventHandler(this.btnCircle_Click);
@@ -57,7 +59,7 @@
             this.btnLine.Location = new System.Drawing.Point(12, 14);
             this.btnLine.Name = "btnLine";
             this.btnLine.Size = new System.Drawing.Size(59, 57);
-            this.btnLine.TabIndex = 1;
+            this.btnLine.TabIndex = 0;
             this.btnLine.Text = "Line";
             this.btnLine.UseVisualStyleBackColor = true;
             this.btnLine.Click += new System.EventHandler(this.btnLine_Click);
@@ -105,19 +107,38 @@
             this.txtStatus.Name = "txtStatus";
             this.txtStatus.Size = new System.Drawing.Size(0, 17);
             // 
+            // txtResult
+            // 
+            this.txtResult.AutoSize = true;
+            this.txtResult.Location = new System.Drawing.Point(537, 14);
+            this.txtResult.Name = "txtResult";
+            this.txtResult.Size = new System.Drawing.Size(0, 13);
+            this.txtResult.TabIndex = 5;
+            // 
+            // btnDFS
+            // 
+            this.btnDFS.Location = new System.Drawing.Point(12, 266);
+            this.btnDFS.Name = "btnDFS";
+            this.btnDFS.Size = new System.Drawing.Size(59, 57);
+            this.btnDFS.TabIndex = 4;
+            this.btnDFS.Text = "DFS";
+            this.btnDFS.UseVisualStyleBackColor = true;
+            this.btnDFS.Click += new System.EventHandler(this.btnDFS_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 413);
+            this.Controls.Add(this.btnDFS);
+            this.Controls.Add(this.txtResult);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btnNodes);
             this.Controls.Add(this.btnColor);
             this.Controls.Add(this.btnLine);
             this.Controls.Add(this.btnCircle);
             this.Name = "Form1";
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Text = "AI Assignment";
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseClick);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
@@ -133,6 +154,8 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripStatusLabel txtStatus;
+        private System.Windows.Forms.Label txtResult;
+        private System.Windows.Forms.Button btnDFS;
 
     }
 }
