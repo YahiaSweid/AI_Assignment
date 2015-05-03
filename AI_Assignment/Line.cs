@@ -19,6 +19,8 @@ namespace AI {
             public int firstNodeIndex;
             public int secondNodeIndex;
 
+            public const int pointSize = 4;
+
             public bool gotFirstPoint;
             
             public Line (Graphics g) {
