@@ -82,7 +82,10 @@ namespace AI {
             return new Node(new Point(0, 0), 0, 0);
         }
 
-        
+        public void setNodeColor (Graphics g, Node node, Color color) {
+            g.FillEllipse(new SolidBrush(color), node.location.X, node.location.Y, node.radius, node.radius);
+            g.DrawString(node.value.ToString(), new Font("Times New Roman", 12), new SolidBrush(Color.Black), new Point(node.location.X + 12, node.location.Y + 12));
+        }
 
         public bool pointInsideNode (Point point, Point nodeLocation, int radius) {
             return (point.X - nodeLocation.X) * (point.X - nodeLocation.X) +
