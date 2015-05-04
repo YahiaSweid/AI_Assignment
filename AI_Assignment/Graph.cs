@@ -14,12 +14,15 @@ namespace AI {
 
             public int value;
             public List<int> edges;
+
+            public int cost;
             
-            public Node (Point location, int value, int radius) {
+            public Node (Point location, int value, int radius, int cost) {
                 this.location = location;
                 this.value = value;
                 this.radius = radius;
                 this.edges = new List<int>();
+                this.cost = cost;
             }
         }
         public struct Edge {
@@ -53,7 +56,8 @@ namespace AI {
         public void addEdge (int first_node, int second_node) {
             edges.Add(new Edge(first_node, second_node));
             nodes[first_node].edges.Add(second_node);
-            nodes[second_node].edges.Add(first_node);
+            // remove the comment to make it bidirectional (undirected)
+            //nodes[second_node].edges.Add(first_node); 
         }
 
         public Node getNode (int index) {
@@ -79,7 +83,7 @@ namespace AI {
                     return nodes[i];
                 }
             }
-            return new Node(new Point(0, 0), 0, 0);
+            return new Node(new Point(0, 0), 0, 0, 0);
         }
 
         public void setNodeColor (Graphics g, Node node, Color color) {
