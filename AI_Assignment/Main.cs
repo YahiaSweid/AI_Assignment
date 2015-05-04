@@ -20,20 +20,25 @@ namespace AI {
         private Algorithms alg;
         private Random random;
 
-        private enum Tool { NONE, LINE, CIRCLE };
+        private enum Tool { NONE, LINE, CIRCLE, STARTNODE, GOALNODE};
         private Tool currentTool = Tool.NONE;
+
+        private enum GraphType { DIRECTED, UNDIRECTED};
+        private GraphType currentGraph = GraphType.DIRECTED;
 
         private enum Algorithm { NONE, DFS, BFS, HillClimbing };
         private Algorithm selectedAlgorithm = Algorithm.NONE;
 
-        
         public ProgramStatus programStatus = ProgramStatus.STOPPED;
 
         private Pen pen;
 
         private Lines lines;
         private Lines.Line line;
-        
+
+        private Graph.Node startNode;
+        private Graph.Node goalNode;
+
         private int nodesCounter = 0;
         
         static bool[] seen;
@@ -48,13 +53,16 @@ namespace AI {
             InitializeComponent();
             g = sheet.CreateGraphics();
             
-            graph = new Graph();
+            graph = new Graph(true);
             
             pen = new Pen(new SolidBrush(Color.Black));
             pen.Width = 2;
             
             line = new Lines.Line(g);
             lines = new Lines(g);
+
+            goalNode = new Graph.Node();
+            startNode = new Graph.Node();
 
             alg = new Algorithms(g, graph, this);
             random = new Random();
@@ -64,7 +72,8 @@ namespace AI {
             if (btnCircle.Checked) {
                 currentTool = Tool.CIRCLE;
                 btnLine.Checked = false;
-                txtStatus.Text = correct + "Node tool has selected";
+                btnStartNode.Checked = false;
+                btnGoalNode.Checked = false;
             } else {
                 currentTool = Tool.NONE;
             }
@@ -74,7 +83,31 @@ namespace AI {
             if (btnLine.Checked) {
                 currentTool = Tool.LINE;
                 btnCircle.Checked = false;
-                txtStatus.Text = correct + "Edge tool has selected";
+                btnStartNode.Checked = false;
+                btnGoalNode.Checked = false;
+            } else {
+                currentTool = Tool.NONE;
+            }
+        }
+
+
+        private void btnStartNode_Click (object sender, EventArgs e) {
+            if (btnStartNode.Checked) {
+                currentTool = Tool.STARTNODE;
+                btnGoalNode.Checked = false;
+                btnLine.Checked = false;
+                btnCircle.Checked = false;
+            } else {
+                currentTool = Tool.NONE;
+            }
+        }
+
+        private void btnGoalNode_Click (object sender, EventArgs e) {
+            if (btnGoalNode.Checked) {
+                currentTool = Tool.GOALNODE;
+                btnStartNode.Checked = false;
+                btnLine.Checked = false;
+                btnCircle.Checked = false;
             } else {
                 currentTool = Tool.NONE;
             }
@@ -86,23 +119,59 @@ namespace AI {
                 createNode(40, e);
             } else if (currentTool == Tool.LINE) {
                 createEdge(e);
-            } else {
-                txtStatus.Text = wrong + "No tool selected !";
+            } else if(currentTool == Tool.STARTNODE){
+                indicateStartGoalNode(false,e);
+            } else if (currentTool == Tool.GOALNODE) {
+                indicateStartGoalNode(true, e);
+            }else{
+                txtStatus.Text = wrong + "Please select one tool";
             }
         }
 
-        private void btnColor_Click (object sender, EventArgs e) {
-            for (int i = 0; i < graph.nodes.Count; i++) {
-                g.FillEllipse(new SolidBrush(Color.Red), graph.nodes[i].location.X , graph.nodes[i].location.Y , 40, 40);
-                g.DrawString(graph.nodes[i].value.ToString(), new Font("Times New Roman", 12), new SolidBrush(Color.Black), new Point(graph.nodes[i].location.X + 12, graph.nodes[i].location.Y + 12));
+        private void indicateStartGoalNode (bool isGoalNode,MouseEventArgs e) {
+            if (graph.nodes.Count > 1) {
+                Point mouseClick = new Point(e.Location.X , e.Location.Y);
+                for (int i = 0; i < graph.nodes.Count; i++) {
+                    if (graph.pointInsideNode(mouseClick, graph.nodes[i].location, graph.nodes[i].radius)) {
+                        Graph.Node n = graph.getNodeByLocation(mouseClick);
+                        if (!isGoalNode){
+                            if (startNode.radius == 0) {
+                                startNode = n;
+                                graph.setNodeColor(g, n, Color.LightGray);
+                            } else {
+                                graph.setNodeColor(g, startNode, startNode.color);
+                                startNode = n;
+                                graph.setNodeColor(g, n, Color.LightGray);
+                            }
+                            txtStatus.Text = correct + "The starting node has been indicated at " + n.value;
+                        }else{
+                            if (goalNode.radius == 0) {
+                                goalNode = n;
+                                graph.setNodeColor(g, n, Color.LightGreen);
+                            } else {
+                                graph.setNodeColor(g, goalNode, goalNode.color);
+                                goalNode = n;
+                                graph.setNodeColor(g, n, Color.LightGreen);
+                            }
+                            txtStatus.Text = correct + "The goal node has been indicated at " + n.value;
+                        }
+                        break;
+                    } else {
+                        txtStatus.Text = wrong + "You have to click on some node";
+                    }
+                }
+            } else {
+                txtStatus.Text = wrong + "Please add two nodes at least";
             }
         }
 
 
         private void btnClean_Click (object sender, EventArgs e) {
             for (int i = 0; i < graph.nodes.Count; i++) {
-                g.FillEllipse(new SolidBrush(sheet.BackColor), graph.nodes[i].location.X, graph.nodes[i].location.Y, 40, 40);
-                g.DrawString(graph.nodes[i].value.ToString(), new Font("Times New Roman", 12), new SolidBrush(Color.Black), new Point(graph.nodes[i].location.X + 12, graph.nodes[i].location.Y + 12));
+                if (graph.nodes[i].location != goalNode.location && graph.nodes[i].location != startNode.location) {
+                    g.FillEllipse(new SolidBrush(sheet.BackColor), graph.nodes[i].location.X, graph.nodes[i].location.Y, 40, 40);
+                    g.DrawString(graph.nodes[i].value.ToString(), new Font("Times New Roman", 12), new SolidBrush(Color.Black), new Point(graph.nodes[i].location.X + 12, graph.nodes[i].location.Y + 12));
+                }
             }
         }
 
@@ -115,7 +184,7 @@ namespace AI {
             g.DrawString(nodesCounter.ToString(), new Font("Times New Roman", 12), new SolidBrush(Color.Black), new Point(mouseClick.X + 12, mouseClick.Y + 12));
             g.DrawString(cost.ToString(), new Font("Times New Roman", 12), new SolidBrush(Color.White), new Point(mouseClick.X + 48, mouseClick.Y + 12));
             
-            graph.addNode(new Graph.Node(mouseClick, nodesCounter, radius, cost));
+            graph.addNode(new Graph.Node(mouseClick, nodesCounter, radius, cost, sheet.BackColor));
             
             nodesCounter++;
             txtStatus.Text = correct + "New node has been created at " + mouseClick.X + "," + mouseClick.Y;
@@ -185,8 +254,8 @@ namespace AI {
         }
 
         private void btnDFS_Click (object sender, EventArgs e) {
+            uncheckAlgortihmsButtons();
             if (graph.nodes.Count > 1 && graph.edges.Count > 1) {
-                uncheckAlgortihmsButtons();
                 btnDFS.Checked = true;
                 selectedAlgorithm = Algorithm.DFS;
             } else {
@@ -196,8 +265,8 @@ namespace AI {
 
 
         private void btnBFS_Click (object sender, EventArgs e) {
+            uncheckAlgortihmsButtons();
             if (graph.nodes.Count > 1 && graph.edges.Count > 1) {
-                uncheckAlgortihmsButtons();
                 btnBFS.Checked = true;
                 selectedAlgorithm = Algorithm.BFS;
             } else {
@@ -207,8 +276,8 @@ namespace AI {
 
 
         private void btnHillClimbing_Click (object sender, EventArgs e) {
+            uncheckAlgortihmsButtons();
             if (graph.nodes.Count > 1 && graph.edges.Count > 1) {
-                uncheckAlgortihmsButtons();
                 btnHillClimbing.Checked = true;
                 selectedAlgorithm = Algorithm.HillClimbing;
             } else {
@@ -218,42 +287,46 @@ namespace AI {
 
 
         private void btnThreadControl_Click (object sender, EventArgs e) {
-            // Start
-            if (programStatus == ProgramStatus.STOPPED) {
-                if (selectedAlgorithm == Algorithm.NONE) {
-                    txtStatus.Text = "Please select one algorithm";
-                    return;
+            if (startNode.radius != 0 && goalNode.radius != 0) {
+                if (programStatus == ProgramStatus.STOPPED) {
+                    if (selectedAlgorithm == Algorithm.NONE) {
+                        txtStatus.Text = "Please select one algorithm";
+                        return;
+                    }
+                    // Start
+                    seen = new bool[graph.nodes.Count];
+                    if (selectedAlgorithm == Algorithm.DFS) {
+                        thread = new Thread(() => alg.DFS(startNode,goalNode, seen));
+                        txtStatus.Text = "DFS Starts !";
+                    } else if (selectedAlgorithm == Algorithm.BFS) {
+                        thread = new Thread(() => alg.BFS(startNode, goalNode, seen));
+                        txtStatus.Text = "BFS Starts !";
+                    } else if (selectedAlgorithm == Algorithm.HillClimbing) {
+                        thread = new Thread(() => alg.HillClimbing(startNode, goalNode, seen));
+                        txtStatus.Text = "Hill Climbing Starts !";
+                    }
+                    programStatus = ProgramStatus.RUNNING;
+                    thread.IsBackground = true;
+                    thread.Start();
+                    btnThreadControl.Image = new Bitmap(Properties.Resources.Pause);
+                    txtResult.Text = "| Result: ";
                 }
-                seen = new bool[graph.nodes.Count];
-                if (selectedAlgorithm == Algorithm.DFS) {
-                    thread = new Thread(() => alg.DFS(graph.getNode(0), seen));
-                    txtStatus.Text = "DFS Starts !";
-                } else if (selectedAlgorithm == Algorithm.BFS) {
-                    thread = new Thread(() => alg.BFS(graph.getNode(0), seen));
-                    txtStatus.Text = "BFS Starts !";
-                } else if (selectedAlgorithm == Algorithm.HillClimbing) {
-                    thread = new Thread(() => alg.HillClimbing(graph.getNode(0), seen));
-                    txtStatus.Text = "Hill Climbing Starts !";
+                    // Pause 
+                else if (programStatus == ProgramStatus.RUNNING) {
+                    thread.Suspend();
+                    programStatus = ProgramStatus.PAUSED;
+                    btnThreadControl.Image = new Bitmap(Properties.Resources.Play);
+                    txtStatus.Text = correct + "Paused !";
                 }
-                programStatus = ProgramStatus.RUNNING;
-                thread.IsBackground = true;
-                thread.Start();
-                btnThreadControl.Image = new Bitmap(Properties.Resources.Pause);
-                txtResult.Text = "| Result: ";
-            }
-                // Pause 
-            else if (programStatus == ProgramStatus.RUNNING) {
-                thread.Suspend();
-                programStatus = ProgramStatus.PAUSED;
-                btnThreadControl.Image = new Bitmap(Properties.Resources.Play);
-                txtStatus.Text = correct + "Paused !";
-            }
-                // Resume
-            else {
-                thread.Resume();
-                programStatus = ProgramStatus.RUNNING;
-                btnThreadControl.Image = new Bitmap(Properties.Resources.Pause);
-                txtStatus.Text = correct + "Resumed";
+                    // Resume
+                else {
+                    thread.Resume();
+                    programStatus = ProgramStatus.RUNNING;
+                    btnThreadControl.Image = new Bitmap(Properties.Resources.Pause);
+                    txtStatus.Text = correct + "Resumed";
+                }
+            } else {
+                txtStatus.Text = wrong + "Please indicate the starting and goal nodes before running the algorithm";
             }
         }
 
@@ -274,10 +347,86 @@ namespace AI {
                 txtStatus.Text = wrong + "Unable to find nodes";
         }
 
+
+        private bool deleteGraph (string confirmationMessage) {
+            if (graph.nodes.Count > 0) {
+                if (MessageBox.Show(confirmationMessage, "Confirmation", MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
+                    return false;
+                
+                graph.freeMemory();
+                lines.freeMemory();
+                nodesCounter = 0;
+                txtStatus.Text = correct + "The graph has been deleted";
+            }
+            // Initialize everything 
+            graph = new Graph(currentGraph == GraphType.DIRECTED);
+
+            lines = new Lines(g);
+            goalNode = new Graph.Node();
+            startNode = new Graph.Node();
+            alg = new Algorithms(g, graph, this);
+            g.Clear(sheet.BackColor);
+            return true;
+        }
+
         private void Main_FormClosed (object sender, FormClosedEventArgs e) {
+            graph.freeMemory();
+            lines.freeMemory();
             Application.Exit();
         }
 
+        private void cmbGraphType_KeyPress (object sender, KeyPressEventArgs e) {
+            e.Handled = true;
+        }
+
+        private void cmbGraphType_TextChanged (object sender, EventArgs e) {
+            
+            
+        }
+
+        private void btnDeleteGraph_Click (object sender, EventArgs e) {
+            deleteGraph("Do you want to delete the graph ?");
+        }
+
+        private void txtWaitingTime_TextChanged (object sender, EventArgs e) {
+            try {
+                alg.waitingTime = Convert.ToInt32(txtWaitingTime.Text);
+            } catch (Exception ex) {
+                alg.waitingTime = 500;
+                txtWaitingTime.Text = Convert.ToString(500);
+            }
+        }
+
+        private void btnDirectedGraph_Click (object sender, EventArgs e) {
+            if (btnDirectedGraph.Checked) {
+                currentGraph = GraphType.DIRECTED;
+                if (deleteGraph("Changing the graph's type requires deleting the current graph\n Do you want to delete the current graph?")) {
+                    btnUndirectedGraph.Checked = false;
+                } else {
+                    currentGraph = GraphType.UNDIRECTED;
+                    btnDirectedGraph.Checked = false;
+                }
+            } else {
+                btnDirectedGraph.Checked = true;
+                currentGraph = GraphType.DIRECTED;
+            }
+        }
+
+        private void btnUndirectedGraph_Click (object sender, EventArgs e) {
+            if (btnUndirectedGraph.Checked) {
+                currentGraph = GraphType.UNDIRECTED;
+                if (deleteGraph("Changing the graph's type requires deleting the current graph\n Do you want to delete the current graph?")) {
+                    btnDirectedGraph.Checked = false;
+                } else {
+                    currentGraph = GraphType.DIRECTED;
+                    btnUndirectedGraph.Checked = false;
+                }
+            } else {
+                btnUndirectedGraph.Checked = true;
+                currentGraph = GraphType.UNDIRECTED;
+            }
+        }
 
 
 

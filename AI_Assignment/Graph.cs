@@ -16,14 +16,18 @@ namespace AI {
             public List<int> edges;
 
             public int cost;
-            
-            public Node (Point location, int value, int radius, int cost) {
+
+            public Color color;
+            // TODO: Polymorphism
+            public Node (Point location, int value, int radius, int cost, Color color) {
                 this.location = location;
                 this.value = value;
                 this.radius = radius;
                 this.edges = new List<int>();
                 this.cost = cost;
+                this.color = color;
             }
+            
         }
         public struct Edge {
             public int first;
@@ -37,9 +41,12 @@ namespace AI {
         public List<Node> nodes;
         public List<Edge> edges;
 
-        public Graph () {
+        private bool directed;
+
+        public Graph (bool directed) {
             nodes = new List<Node>();
             edges = new List<Edge>();
+            this.directed = directed;
         }
 
         ~Graph () {
@@ -56,8 +63,8 @@ namespace AI {
         public void addEdge (int first_node, int second_node) {
             edges.Add(new Edge(first_node, second_node));
             nodes[first_node].edges.Add(second_node);
-            // remove the comment to make it bidirectional (undirected)
-            //nodes[second_node].edges.Add(first_node); 
+            if(!directed)
+                nodes[second_node].edges.Add(first_node); 
         }
 
         public Node getNode (int index) {
@@ -83,7 +90,7 @@ namespace AI {
                     return nodes[i];
                 }
             }
-            return new Node(new Point(0, 0), 0, 0, 0);
+            return new Node(new Point(0, 0), 0, 0, 0,Color.Black);
         }
 
         public void setNodeColor (Graphics g, Node node, Color color) {
@@ -94,6 +101,14 @@ namespace AI {
         public bool pointInsideNode (Point point, Point nodeLocation, int radius) {
             return (point.X - nodeLocation.X) * (point.X - nodeLocation.X) +
                    (point.Y - nodeLocation.Y) * (point.Y - nodeLocation.Y) < radius * radius;
+        }
+
+        public void freeMemory () {
+            if (nodes.Count > 0)
+                nodes.RemoveRange(0, nodes.Count - 1);
+            if (edges.Count > 0)
+                edges.RemoveRange(0, edges.Count - 1);
+            
         }
 
     }

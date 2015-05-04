@@ -59,6 +59,11 @@ namespace AI {
             }       
         }
 
+        public void freeMemory () {
+            if(lines.Count > 0)
+                lines.RemoveRange(0,lines.Count-1);
+        }
+
 
     }
 

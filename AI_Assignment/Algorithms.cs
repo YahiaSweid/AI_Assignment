@@ -18,27 +18,38 @@ namespace AI {
         private Random random;
 
         private int DFSCounter;             // used in DFS to check whether it finished or not
+
+        public int waitingTime;
         
         public Algorithms (Graphics g,Graph graph, Main frm) {
             this.g = g;
             this.frm = frm;
             this.graph = graph;
-            random = new Random();
             this.DFSCounter = 1;
+
+            random = new Random();
+            waitingTime = 500;
         }
 
-        public void HillClimbing (Graph.Node root, bool[] seen) {
+        public void HillClimbing (Graph.Node root, Graph.Node goal, bool[] seen) {
+            Graph.Node startingNode = root;
             nodes = new Queue<Graph.Node>();
             nodes.Enqueue(root);
             int localMaximaCounter = 0;
+            bool foundGoal = false;
             while (nodes.Count > 0) {
                 root = nodes.Dequeue();
                 seen[graph.getNodeId(root)] = true;
-                Thread.Sleep(500);
-                graph.setNodeColor(g, root, Color.Gold);
+                //Thread.Sleep(waitingTime);
+                if (root.location != startingNode.location && root.location != goal.location)
+                    graph.setNodeColor(g, root, Color.Gold);
                 frm.Invoke((MethodInvoker)delegate() {
                     frm.txtResult.Text += root.value + " ";
                 });
+                if (root.location == goal.location) {
+                    foundGoal = true;
+                    break;
+                }
 
                 children = new List<Graph.Node>();
                 for (int i = 0; i < root.edges.Count; i++) {
@@ -46,7 +57,7 @@ namespace AI {
                     children.Add(n);
                 }
 
-                Graph.Node bestChild = new Graph.Node(new Point(0,0),0,0,999);
+                Graph.Node bestChild = new Graph.Node(new Point(0,0),0,0,999,Color.Black);
                 bool found = false;
                 for (int i = 0; i < children.Count; i++) {
                     if (!seen[graph.getNodeId(children[i])]) {
@@ -65,7 +76,7 @@ namespace AI {
                     frm.Invoke((MethodInvoker)delegate() {
                         frm.txtStatus.Text = "Solving Local Maxima for " + localMaximaCounter + " time";
                     });
-                    Thread.Sleep(1000);
+                    Thread.Sleep(waitingTime);
                     int nextNodeId = 0;
                     int counter = 0;
                     bool foundNode = false;
@@ -86,24 +97,32 @@ namespace AI {
                  
             }
             frm.Invoke((MethodInvoker)delegate() {
-                frm.txtStatus.Text = " Hill Climbing Finished ! Local Maxima Problem Occured " + localMaximaCounter + " times";
+                if (foundGoal) {
+                    frm.txtStatus.Text = "Hill Climbing reached the goal ! Local Maxima Problem Occured " + localMaximaCounter + " times";
+                } else {
+                    frm.txtStatus.Text = " Hill Climbing Finished ! Local Maxima Problem Occured " + localMaximaCounter + " times";
+                }
                 frm.programStatus = ProgramStatus.STOPPED;
                 frm.btnThreadControl.Image = new Bitmap(Properties.Resources.Play);
             });
         }
 
-        public void DFS (Graph.Node root, bool[] seen) {
+        public void DFS (Graph.Node root, Graph.Node goal, bool[] seen) {
             seen[graph.getNodeId(root)] = true;
             for (int i = 0; i < root.edges.Count; i++) {
                 Graph.Node n = graph.getNode(root.edges[i]);
                 if (!seen[root.edges[i]]) {
                     seen[root.edges[i]] = true;
-                    DFS(n,seen);
-                    Thread.Sleep(1000);
-                    graph.setNodeColor(g, n, Color.Gold);
+                    DFS(n, goal,seen);
+                    Thread.Sleep(waitingTime);
+                    if (n.location != root.location && n.location != goal.location)
+                        graph.setNodeColor(g, n, Color.Gold);
                     frm.Invoke((MethodInvoker)delegate() {
                         frm.txtResult.Text += n.value + " ";
                     });
+                    if (n.location == goal.location) {
+                        frm.txtStatus.Text = "DFS reached the goal !";
+                    }
                     DFSCounter++;
                 }
             }
@@ -118,10 +137,11 @@ namespace AI {
             }
         }
 
-        public void BFS (Graph.Node root, bool[] seen) {
+        public void BFS (Graph.Node root, Graph.Node goal, bool[] seen) {
             nodes = new Queue<Graph.Node>();
             nodes.Enqueue(root);
             seen[graph.getNodeId(root)] = true;
+            bool foundGoal = false;
             while (nodes.Count > 0) {
                 root = nodes.Dequeue();
                 for (int i = 0; i < root.edges.Count; i++) {
@@ -129,17 +149,26 @@ namespace AI {
                     if (!seen[root.edges[i]]) {
                         nodes.Enqueue(n);
                         seen[root.edges[i]] = true;
-                        Thread.Sleep(500);
-                        graph.setNodeColor(g, n, Color.Gold);
-                        
+                        Thread.Sleep(waitingTime);
+                        if(n.location != root.location && n.location != goal.location)
+                            graph.setNodeColor(g, n, Color.Gold);
                         frm.Invoke((MethodInvoker)delegate() {
                             frm.txtResult.Text += n.value + " ";
                         });
+                        if (n.location == goal.location) {
+                            foundGoal = true;
+                            break;
+                        }
                     }
                 }
+                if (foundGoal)
+                    break;
             }
             frm.Invoke((MethodInvoker)delegate() {
-                frm.txtStatus.Text = " BFS Finished !";
+                if(foundGoal)
+                    frm.txtStatus.Text = "BFS reached the goal !";
+                else
+                    frm.txtStatus.Text = " BFS Finished !";
                 frm.programStatus = ProgramStatus.STOPPED;
                 frm.btnThreadControl.Image = new Bitmap(Properties.Resources.Play);
             });
