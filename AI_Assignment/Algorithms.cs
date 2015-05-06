@@ -31,6 +31,10 @@ namespace AI {
             waitingTime = 500;
         }
 
+        public void AStar (Graph.Node root, Graph.Node goal, bool[] seen) {
+
+        }
+
         public void HillClimbing (Graph.Node root, Graph.Node goal, bool[] seen) {
             Graph.Node startingNode = root;
             nodes = new Queue<Graph.Node>();
@@ -40,9 +44,9 @@ namespace AI {
             while (nodes.Count > 0) {
                 root = nodes.Dequeue();
                 seen[graph.getNodeId(root)] = true;
-                //Thread.Sleep(waitingTime);
+                Thread.Sleep(waitingTime);
                 if (root.location != startingNode.location && root.location != goal.location)
-                    graph.setNodeColor(g, root, Color.Gold);
+                    graph.setNodeColor(root.type, g, root, Color.Gold);
                 frm.Invoke((MethodInvoker)delegate() {
                     frm.txtResult.Text += root.value + " ";
                 });
@@ -57,11 +61,15 @@ namespace AI {
                     children.Add(n);
                 }
 
-                Graph.Node bestChild = new Graph.Node(new Point(0,0),0,0,999,Color.Black);
+                Graph.Node bestChild = new Graph.Node(root.type, new Point(0, 0), 0, 9999, Color.Black);
                 bool found = false;
                 for (int i = 0; i < children.Count; i++) {
                     if (!seen[graph.getNodeId(children[i])]) {
-                        if (children[i].cost < bestChild.cost && children[i].location != root.location) {
+                        // This condition is not part of the algorithm I just added it to improve it
+                        // It checks whether the goal is one of node's children or not
+                        if (children[i].location == goal.location)
+                            bestChild = children[i];
+                        else if (children[i].cost < bestChild.cost && children[i].location != root.location) {
                             bestChild = children[i];
                         }
                         found = true;
@@ -114,26 +122,21 @@ namespace AI {
                 if (!seen[root.edges[i]]) {
                     seen[root.edges[i]] = true;
                     DFS(n, goal,seen);
+                    if (frm.programStatus == ProgramStatus.STOPPED)
+                        return;
                     Thread.Sleep(waitingTime);
-                    if (n.location != root.location && n.location != goal.location)
-                        graph.setNodeColor(g, n, Color.Gold);
-                    frm.Invoke((MethodInvoker)delegate() {
-                        frm.txtResult.Text += n.value + " ";
-                    });
+                    if (n.location != root.location && n.location != goal.location && !n.obstacle)
+                        graph.setNodeColor(n.type, g, n, Color.Gold);
+                    
+                    frm.txtResult.Text += n.value + " ";
                     if (n.location == goal.location) {
                         frm.txtStatus.Text = "DFS reached the goal !";
+                        frm.programStatus = ProgramStatus.STOPPED;
+                        frm.btnThreadControl.Image = new Bitmap(Properties.Resources.Play);
+                        DFSCounter = 1;
                     }
                     DFSCounter++;
                 }
-            }
-            // Check if DFS visited all the nodes
-            if (DFSCounter >= seen.Length) {
-                frm.Invoke((MethodInvoker)delegate() {
-                    frm.txtStatus.Text = "DFS Finished !";
-                    frm.programStatus = ProgramStatus.STOPPED;
-                    frm.btnThreadControl.Image = new Bitmap(Properties.Resources.Play);
-                });
-                DFSCounter = 1;
             }
         }
 
@@ -150,8 +153,8 @@ namespace AI {
                         nodes.Enqueue(n);
                         seen[root.edges[i]] = true;
                         Thread.Sleep(waitingTime);
-                        if(n.location != root.location && n.location != goal.location)
-                            graph.setNodeColor(g, n, Color.Gold);
+                        if (n.location != root.location && n.location != goal.location && !n.obstacle)
+                            graph.setNodeColor(n.type, g, n, Color.Gold);
                         frm.Invoke((MethodInvoker)delegate() {
                             frm.txtResult.Text += n.value + " ";
                         });

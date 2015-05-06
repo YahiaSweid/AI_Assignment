@@ -1,0 +1,10 @@
+C:\Users\user\Documents\Visual Studio 2013\Projects\AI_Assignment\AI_Assignment\bin\Release\AI_Assignment.exe.config
+C:\Users\user\Documents\Visual Studio 2013\Projects\AI_Assignment\AI_Assignment\bin\Release\AI_Assignment.exe
+C:\Users\user\Documents\Visual Studio 2013\Projects\AI_Assignment\AI_Assignment\bin\Release\AI_Assignment.pdb
+C:\Users\user\Documents\Visual Studio 2013\Projects\AI_Assignment\AI_Assignment\obj\Release\AI.DebugForm.resources
+C:\Users\user\Documents\Visual Studio 2013\Projects\AI_Assignment\AI_Assignment\obj\Release\AI.Main.resources
+C:\Users\user\Documents\Visual Studio 2013\Projects\AI_Assignment\AI_Assignment\obj\Release\AI.Properties.Resources.resources
+C:\Users\user\Documents\Visual Studio 2013\Projects\AI_Assignment\AI_Assignment\obj\Release\AI_Assignment.csproj.GenerateResource.Cache
+C:\Users\user\Documents\Visual Studio 2013\Projects\AI_Assignment\AI_Assignment\obj\Release\AI_Assignment.exe
+C:\Users\user\Documents\Visual Studio 2013\Projects\AI_Assignment\AI_Assignment\obj\Release\AI_Assignment.pdb
+C:\Users\user\Documents\Visual Studio 2013\Projects\AI_Assignment\AI_Assignment\obj\Release\AI_Assignment.csprojResolveAssemblyReference.cache

@@ -7,9 +7,13 @@ using System.Threading.Tasks;
 
 namespace AI {
     public class Graph {
+
+        public enum NodeType { NONE, CIRCLE, SQUARE };
+
         public struct Node {
 
-            public int radius;
+            static public int radius = 40;
+            static public Size size = new Size(20,20);
             public Point location;
 
             public int value;
@@ -18,14 +22,20 @@ namespace AI {
             public int cost;
 
             public Color color;
-            // TODO: Polymorphism
-            public Node (Point location, int value, int radius, int cost, Color color) {
+
+            public NodeType type;
+
+            public bool obstacle;
+
+            
+            public Node (NodeType nodeType, Point location, int value, int cost, Color color) {
+                this.edges = new List<int>();
+                this.type = nodeType;
                 this.location = location;
                 this.value = value;
-                this.radius = radius;
-                this.edges = new List<int>();
                 this.cost = cost;
                 this.color = color;
+                this.obstacle = false;
             }
             
         }
@@ -40,6 +50,10 @@ namespace AI {
 
         public List<Node> nodes;
         public List<Edge> edges;
+
+        static public Color startNodeColor = Color.LightBlue;
+        static public Color goalNodeColor = Color.Red;
+        static public Color obstacleColor = Color.Black;
 
         private bool directed;
 
@@ -71,6 +85,12 @@ namespace AI {
             return nodes[index];
         }
 
+
+        public int distance (Node first, Node second) {
+            Point vec = new Point((second.location.X - first.location.X),(second.location.Y - first.location.Y));
+            return (int)Math.Sqrt((vec.X * vec.X) + (vec.Y * vec.Y));
+        }
+
         public int getNodeId (Node node) {
             for (int i = 0; i < nodes.Count; i++) {
                 if (node.location == nodes[i].location)
@@ -83,24 +103,43 @@ namespace AI {
             return edges[index];
         }
 
-
-        public Node getNodeByLocation (Point location) {
+        public Node getNodeByLocation (NodeType type, Point location) {
             for (int i = 0; i < nodes.Count; i++) {
-                if (pointInsideNode(location,nodes[i].location,nodes[i].radius)){
+                if (pointInsideNode(type, location, nodes[i].location)) {
                     return nodes[i];
                 }
             }
-            return new Node(new Point(0, 0), 0, 0, 0,Color.Black);
+            return new Node(NodeType.NONE, new Point(0, 0), 0, 0,Color.Black);
         }
 
-        public void setNodeColor (Graphics g, Node node, Color color) {
-            g.FillEllipse(new SolidBrush(color), node.location.X, node.location.Y, node.radius, node.radius);
-            g.DrawString(node.value.ToString(), new Font("Times New Roman", 12), new SolidBrush(Color.Black), new Point(node.location.X + 12, node.location.Y + 12));
+
+        public void setNodeColor (NodeType type, Graphics g, Node node, Color color) {
+            if (type == NodeType.CIRCLE) {
+                g.FillEllipse(new SolidBrush(color), node.location.X, node.location.Y, Node.radius, Node.radius);
+                g.DrawString(node.value.ToString(), new Font("Times New Roman", 12), new SolidBrush(Color.Black), new Point(node.location.X + 12, node.location.Y + 12));
+            } else {
+                // Square Node
+                g.FillRectangle(new SolidBrush(color), new Rectangle(node.location, new Size(Node.size.Width - 1 , Node.size.Height - 1)));
+            }
         }
 
-        public bool pointInsideNode (Point point, Point nodeLocation, int radius) {
-            return (point.X - nodeLocation.X) * (point.X - nodeLocation.X) +
-                   (point.Y - nodeLocation.Y) * (point.Y - nodeLocation.Y) < radius * radius;
+        
+
+        // Collision detection
+        public bool pointInsideNode (NodeType nodeType, Point point, Point nodeLocation) {
+            if (nodeType == NodeType.SQUARE) {
+                // our zero at top left corner
+                Point topRight = new Point(nodeLocation.X + Node.size.Width, nodeLocation.Y);
+                Point bottomLeft = new Point(nodeLocation.X, nodeLocation.Y + Node.size.Height);
+                return point.X >= bottomLeft.X &&
+                        point.X <= topRight.X &&
+                        point.Y >= topRight.Y &&
+                        point.Y <= bottomLeft.Y;
+            } else {
+                // Circle
+                return (point.X - nodeLocation.X) * (point.X - nodeLocation.X) +
+                       (point.Y - nodeLocation.Y) * (point.Y - nodeLocation.Y) < Node.radius * Node.radius;
+            }
         }
 
         public void freeMemory () {

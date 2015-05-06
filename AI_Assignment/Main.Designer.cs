@@ -36,26 +36,29 @@
             this.txtStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.txtResult = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            this.txtWaitingTime = new System.Windows.Forms.ToolStripTextBox();
+            this.sheet = new System.Windows.Forms.Panel();
             this.btnLine = new System.Windows.Forms.ToolStripButton();
             this.btnCircle = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.btnGrid = new System.Windows.Forms.ToolStripButton();
             this.btnStartNode = new System.Windows.Forms.ToolStripButton();
             this.btnGoalNode = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.btnObstacle = new System.Windows.Forms.ToolStripButton();
             this.btnClean = new System.Windows.Forms.ToolStripButton();
             this.btnDeleteGraph = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.btnDebug = new System.Windows.Forms.ToolStripButton();
             this.btnThreadControl = new System.Windows.Forms.ToolStripButton();
             this.btnAlgorithms = new System.Windows.Forms.ToolStripDropDownButton();
             this.btnDFS = new System.Windows.Forms.ToolStripMenuItem();
             this.btnBFS = new System.Windows.Forms.ToolStripMenuItem();
             this.btnHillClimbing = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.txtWaitingTime = new System.Windows.Forms.ToolStripTextBox();
-            this.sheet = new System.Windows.Forms.Panel();
+            this.btnAStar = new System.Windows.Forms.ToolStripMenuItem();
             this.btnDirectedGraph = new System.Windows.Forms.ToolStripButton();
             this.btnUndirectedGraph = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1.SuspendLayout();
@@ -97,9 +100,11 @@
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnLine,
             this.btnCircle,
+            this.btnGrid,
             this.toolStripSeparator2,
             this.btnStartNode,
             this.btnGoalNode,
+            this.btnObstacle,
             this.toolStripSeparator1,
             this.btnClean,
             this.btnDeleteGraph,
@@ -121,141 +126,20 @@
             this.toolStrip1.TabIndex = 7;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // btnLine
-            // 
-            this.btnLine.CheckOnClick = true;
-            this.btnLine.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnLine.Image = global::AI.Properties.Resources.line;
-            this.btnLine.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnLine.Name = "btnLine";
-            this.btnLine.Size = new System.Drawing.Size(23, 22);
-            this.btnLine.Text = "toolStripButton1";
-            this.btnLine.Click += new System.EventHandler(this.btnLine_Click);
-            // 
-            // btnCircle
-            // 
-            this.btnCircle.CheckOnClick = true;
-            this.btnCircle.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnCircle.Image = global::AI.Properties.Resources.circle;
-            this.btnCircle.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnCircle.Name = "btnCircle";
-            this.btnCircle.Size = new System.Drawing.Size(23, 22);
-            this.btnCircle.Text = "toolStripButton2";
-            this.btnCircle.Click += new System.EventHandler(this.btnCircle_Click);
-            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-            // 
-            // btnStartNode
-            // 
-            this.btnStartNode.CheckOnClick = true;
-            this.btnStartNode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnStartNode.Image = global::AI.Properties.Resources.start;
-            this.btnStartNode.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnStartNode.Name = "btnStartNode";
-            this.btnStartNode.Size = new System.Drawing.Size(23, 22);
-            this.btnStartNode.Text = "toolStripButton1";
-            this.btnStartNode.Click += new System.EventHandler(this.btnStartNode_Click);
-            // 
-            // btnGoalNode
-            // 
-            this.btnGoalNode.CheckOnClick = true;
-            this.btnGoalNode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnGoalNode.Image = global::AI.Properties.Resources.goal;
-            this.btnGoalNode.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnGoalNode.Name = "btnGoalNode";
-            this.btnGoalNode.Size = new System.Drawing.Size(23, 22);
-            this.btnGoalNode.Text = "toolStripButton1";
-            this.btnGoalNode.Click += new System.EventHandler(this.btnGoalNode_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
-            // btnClean
-            // 
-            this.btnClean.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnClean.Image = global::AI.Properties.Resources.Paint;
-            this.btnClean.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnClean.Name = "btnClean";
-            this.btnClean.Size = new System.Drawing.Size(23, 22);
-            this.btnClean.Text = "toolStripButton1";
-            this.btnClean.Click += new System.EventHandler(this.btnClean_Click);
-            // 
-            // btnDeleteGraph
-            // 
-            this.btnDeleteGraph.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnDeleteGraph.Image = global::AI.Properties.Resources.eraser;
-            this.btnDeleteGraph.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnDeleteGraph.Name = "btnDeleteGraph";
-            this.btnDeleteGraph.Size = new System.Drawing.Size(23, 22);
-            this.btnDeleteGraph.Text = "toolStripButton1";
-            this.btnDeleteGraph.Click += new System.EventHandler(this.btnDeleteGraph_Click);
-            // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
-            // 
-            // btnDebug
-            // 
-            this.btnDebug.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnDebug.Image = global::AI.Properties.Resources.debug;
-            this.btnDebug.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnDebug.Name = "btnDebug";
-            this.btnDebug.Size = new System.Drawing.Size(23, 22);
-            this.btnDebug.Text = "toolStripButton1";
-            this.btnDebug.Click += new System.EventHandler(this.btnDebug_Click);
-            // 
-            // btnThreadControl
-            // 
-            this.btnThreadControl.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnThreadControl.Image = global::AI.Properties.Resources.Play;
-            this.btnThreadControl.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnThreadControl.Name = "btnThreadControl";
-            this.btnThreadControl.Size = new System.Drawing.Size(23, 22);
-            this.btnThreadControl.Text = "toolStripButton1";
-            this.btnThreadControl.Click += new System.EventHandler(this.btnThreadControl_Click);
-            // 
-            // btnAlgorithms
-            // 
-            this.btnAlgorithms.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnAlgorithms.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.btnDFS,
-            this.btnBFS,
-            this.btnHillClimbing});
-            this.btnAlgorithms.Image = global::AI.Properties.Resources.search;
-            this.btnAlgorithms.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnAlgorithms.Name = "btnAlgorithms";
-            this.btnAlgorithms.Size = new System.Drawing.Size(29, 22);
-            this.btnAlgorithms.Text = "toolStripDropDownButton1";
-            // 
-            // btnDFS
-            // 
-            this.btnDFS.CheckOnClick = true;
-            this.btnDFS.Name = "btnDFS";
-            this.btnDFS.Size = new System.Drawing.Size(178, 22);
-            this.btnDFS.Text = "Depth-first Search";
-            this.btnDFS.Click += new System.EventHandler(this.btnDFS_Click);
-            // 
-            // btnBFS
-            // 
-            this.btnBFS.CheckOnClick = true;
-            this.btnBFS.Name = "btnBFS";
-            this.btnBFS.Size = new System.Drawing.Size(178, 22);
-            this.btnBFS.Text = "Breadth-first Search";
-            this.btnBFS.Click += new System.EventHandler(this.btnBFS_Click);
-            // 
-            // btnHillClimbing
-            // 
-            this.btnHillClimbing.CheckOnClick = true;
-            this.btnHillClimbing.Name = "btnHillClimbing";
-            this.btnHillClimbing.Size = new System.Drawing.Size(178, 22);
-            this.btnHillClimbing.Text = "Hill Climbing";
-            this.btnHillClimbing.Click += new System.EventHandler(this.btnHillClimbing_Click);
             // 
             // toolStripSeparator4
             // 
@@ -291,6 +175,159 @@
             this.sheet.Size = new System.Drawing.Size(820, 417);
             this.sheet.TabIndex = 8;
             this.sheet.MouseClick += new System.Windows.Forms.MouseEventHandler(this.sheet_MouseClick);
+            // 
+            // btnLine
+            // 
+            this.btnLine.CheckOnClick = true;
+            this.btnLine.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnLine.Image = global::AI.Properties.Resources.line;
+            this.btnLine.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnLine.Name = "btnLine";
+            this.btnLine.Size = new System.Drawing.Size(23, 22);
+            this.btnLine.Text = "toolStripButton1";
+            this.btnLine.Click += new System.EventHandler(this.btnLine_Click);
+            // 
+            // btnCircle
+            // 
+            this.btnCircle.CheckOnClick = true;
+            this.btnCircle.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnCircle.Image = global::AI.Properties.Resources.circle;
+            this.btnCircle.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnCircle.Name = "btnCircle";
+            this.btnCircle.Size = new System.Drawing.Size(23, 22);
+            this.btnCircle.Text = "toolStripButton2";
+            this.btnCircle.Click += new System.EventHandler(this.btnCircle_Click);
+            // 
+            // btnGrid
+            // 
+            this.btnGrid.CheckOnClick = true;
+            this.btnGrid.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnGrid.Image = global::AI.Properties.Resources.grid;
+            this.btnGrid.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnGrid.Name = "btnGrid";
+            this.btnGrid.Size = new System.Drawing.Size(23, 22);
+            this.btnGrid.Text = "Grid";
+            this.btnGrid.Click += new System.EventHandler(this.btnGrid_Click);
+            // 
+            // btnStartNode
+            // 
+            this.btnStartNode.CheckOnClick = true;
+            this.btnStartNode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnStartNode.Image = global::AI.Properties.Resources.start;
+            this.btnStartNode.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnStartNode.Name = "btnStartNode";
+            this.btnStartNode.Size = new System.Drawing.Size(23, 22);
+            this.btnStartNode.Text = "toolStripButton1";
+            this.btnStartNode.Click += new System.EventHandler(this.btnStartNode_Click);
+            // 
+            // btnGoalNode
+            // 
+            this.btnGoalNode.CheckOnClick = true;
+            this.btnGoalNode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnGoalNode.Image = global::AI.Properties.Resources.goal;
+            this.btnGoalNode.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnGoalNode.Name = "btnGoalNode";
+            this.btnGoalNode.Size = new System.Drawing.Size(23, 22);
+            this.btnGoalNode.Text = "toolStripButton1";
+            this.btnGoalNode.Click += new System.EventHandler(this.btnGoalNode_Click);
+            // 
+            // btnObstacle
+            // 
+            this.btnObstacle.CheckOnClick = true;
+            this.btnObstacle.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnObstacle.Image = global::AI.Properties.Resources.obstacle;
+            this.btnObstacle.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnObstacle.Name = "btnObstacle";
+            this.btnObstacle.Size = new System.Drawing.Size(23, 22);
+            this.btnObstacle.Text = "toolStripButton1";
+            this.btnObstacle.Click += new System.EventHandler(this.btnObstacle_Click);
+            // 
+            // btnClean
+            // 
+            this.btnClean.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnClean.Image = global::AI.Properties.Resources.Paint;
+            this.btnClean.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnClean.Name = "btnClean";
+            this.btnClean.Size = new System.Drawing.Size(23, 22);
+            this.btnClean.Text = "toolStripButton1";
+            this.btnClean.Click += new System.EventHandler(this.btnClean_Click);
+            // 
+            // btnDeleteGraph
+            // 
+            this.btnDeleteGraph.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnDeleteGraph.Image = global::AI.Properties.Resources.eraser;
+            this.btnDeleteGraph.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnDeleteGraph.Name = "btnDeleteGraph";
+            this.btnDeleteGraph.Size = new System.Drawing.Size(23, 22);
+            this.btnDeleteGraph.Text = "toolStripButton1";
+            this.btnDeleteGraph.Click += new System.EventHandler(this.btnDeleteGraph_Click);
+            // 
+            // btnDebug
+            // 
+            this.btnDebug.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnDebug.Image = global::AI.Properties.Resources.debug;
+            this.btnDebug.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnDebug.Name = "btnDebug";
+            this.btnDebug.Size = new System.Drawing.Size(23, 22);
+            this.btnDebug.Text = "toolStripButton1";
+            this.btnDebug.Click += new System.EventHandler(this.btnDebug_Click);
+            // 
+            // btnThreadControl
+            // 
+            this.btnThreadControl.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnThreadControl.Image = global::AI.Properties.Resources.Play;
+            this.btnThreadControl.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnThreadControl.Name = "btnThreadControl";
+            this.btnThreadControl.Size = new System.Drawing.Size(23, 22);
+            this.btnThreadControl.Text = "toolStripButton1";
+            this.btnThreadControl.Click += new System.EventHandler(this.btnThreadControl_Click);
+            // 
+            // btnAlgorithms
+            // 
+            this.btnAlgorithms.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnAlgorithms.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btnDFS,
+            this.btnBFS,
+            this.btnHillClimbing,
+            this.btnAStar});
+            this.btnAlgorithms.Image = global::AI.Properties.Resources.search;
+            this.btnAlgorithms.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnAlgorithms.Name = "btnAlgorithms";
+            this.btnAlgorithms.Size = new System.Drawing.Size(29, 22);
+            this.btnAlgorithms.Text = "toolStripDropDownButton1";
+            // 
+            // btnDFS
+            // 
+            this.btnDFS.CheckOnClick = true;
+            this.btnDFS.Name = "btnDFS";
+            this.btnDFS.Size = new System.Drawing.Size(178, 22);
+            this.btnDFS.Text = "Depth-first Search";
+            this.btnDFS.Click += new System.EventHandler(this.btnDFS_Click);
+            // 
+            // btnBFS
+            // 
+            this.btnBFS.CheckOnClick = true;
+            this.btnBFS.Name = "btnBFS";
+            this.btnBFS.Size = new System.Drawing.Size(178, 22);
+            this.btnBFS.Text = "Breadth-first Search";
+            this.btnBFS.Click += new System.EventHandler(this.btnBFS_Click);
+            // 
+            // btnHillClimbing
+            // 
+            this.btnHillClimbing.CheckOnClick = true;
+            this.btnHillClimbing.Name = "btnHillClimbing";
+            this.btnHillClimbing.Size = new System.Drawing.Size(178, 22);
+            this.btnHillClimbing.Text = "Hill Climbing";
+            this.btnHillClimbing.Click += new System.EventHandler(this.btnHillClimbing_Click);
+            // 
+            // btnAStar
+            // 
+            this.btnAStar.CheckOnClick = true;
+            this.btnAStar.Enabled = false;
+            this.btnAStar.Name = "btnAStar";
+            this.btnAStar.Size = new System.Drawing.Size(178, 22);
+            this.btnAStar.Text = "A*";
+            this.btnAStar.Click += new System.EventHandler(this.btnAStar_Click);
             // 
             // btnDirectedGraph
             // 
@@ -370,6 +407,9 @@
         private System.Windows.Forms.ToolStripTextBox txtWaitingTime;
         private System.Windows.Forms.ToolStripButton btnDirectedGraph;
         private System.Windows.Forms.ToolStripButton btnUndirectedGraph;
+        private System.Windows.Forms.ToolStripMenuItem btnAStar;
+        private System.Windows.Forms.ToolStripButton btnGrid;
+        private System.Windows.Forms.ToolStripButton btnObstacle;
 
     }
 }

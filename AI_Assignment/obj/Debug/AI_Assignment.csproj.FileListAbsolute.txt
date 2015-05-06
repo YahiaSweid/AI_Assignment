@@ -7,3 +7,4 @@ C:\Users\user\Documents\Visual Studio 2013\Projects\AI_Assignment\AI_Assignment\
 C:\Users\user\Documents\Visual Studio 2013\Projects\AI_Assignment\AI_Assignment\obj\Debug\AI_Assignment.exe
 C:\Users\user\Documents\Visual Studio 2013\Projects\AI_Assignment\AI_Assignment\obj\Debug\AI_Assignment.pdb
 C:\Users\user\Documents\Visual Studio 2013\Projects\AI_Assignment\AI_Assignment\obj\Debug\AI.Main.resources
+C:\Users\user\Documents\Visual Studio 2013\Projects\AI_Assignment\AI_Assignment\obj\Debug\AI.DebugForm.resources

@@ -18,18 +18,19 @@ namespace AI {
         private Graphics g;
         private Graph graph;
         private Algorithms alg;
-        private Random random;
+        private DebugForm debugForm;
 
-        private enum Tool { NONE, LINE, CIRCLE, STARTNODE, GOALNODE};
+        private enum Tool { NONE, LINE, CIRCLE, STARTNODE, GOALNODE, OBSTACLE};
         private Tool currentTool = Tool.NONE;
 
         private enum GraphType { DIRECTED, UNDIRECTED};
         private GraphType currentGraph = GraphType.DIRECTED;
 
-        private enum Algorithm { NONE, DFS, BFS, HillClimbing };
+        private enum Algorithm { NONE, DFS, BFS, HillClimbing, AStar };
         private Algorithm selectedAlgorithm = Algorithm.NONE;
 
         public ProgramStatus programStatus = ProgramStatus.STOPPED;
+        private Graph.NodeType nodeType = Graph.NodeType.CIRCLE;
 
         private Pen pen;
 
@@ -65,7 +66,7 @@ namespace AI {
             startNode = new Graph.Node();
 
             alg = new Algorithms(g, graph, this);
-            random = new Random();
+            debugForm = new DebugForm();
         }
 
         private void btnCircle_Click (object sender, EventArgs e) {
@@ -74,6 +75,7 @@ namespace AI {
                 btnLine.Checked = false;
                 btnStartNode.Checked = false;
                 btnGoalNode.Checked = false;
+                btnObstacle.Checked = false;
             } else {
                 currentTool = Tool.NONE;
             }
@@ -85,6 +87,7 @@ namespace AI {
                 btnCircle.Checked = false;
                 btnStartNode.Checked = false;
                 btnGoalNode.Checked = false;
+                btnObstacle.Checked = false;
             } else {
                 currentTool = Tool.NONE;
             }
@@ -95,6 +98,7 @@ namespace AI {
             if (btnStartNode.Checked) {
                 currentTool = Tool.STARTNODE;
                 btnGoalNode.Checked = false;
+                btnObstacle.Checked = false;
                 btnLine.Checked = false;
                 btnCircle.Checked = false;
             } else {
@@ -106,6 +110,7 @@ namespace AI {
             if (btnGoalNode.Checked) {
                 currentTool = Tool.GOALNODE;
                 btnStartNode.Checked = false;
+                btnObstacle.Checked = false;
                 btnLine.Checked = false;
                 btnCircle.Checked = false;
             } else {
@@ -114,44 +119,84 @@ namespace AI {
         }
 
 
+        private void btnObstacle_Click (object sender, EventArgs e) {
+            if (btnObstacle.Checked) {
+                currentTool = Tool.OBSTACLE;
+                btnStartNode.Checked = false;
+                btnGoalNode.Checked = false;
+                btnLine.Checked = false;
+                btnCircle.Checked = false;
+            } else {
+                currentTool = Tool.NONE;
+            }
+        }
+
+
+
         private void sheet_MouseClick (object sender, MouseEventArgs e) {
             if (currentTool == Tool.CIRCLE) {
                 createNode(40, e);
             } else if (currentTool == Tool.LINE) {
                 createEdge(e);
             } else if(currentTool == Tool.STARTNODE){
-                indicateStartGoalNode(false,e);
+                setStartGoalNode(false,e);
             } else if (currentTool == Tool.GOALNODE) {
-                indicateStartGoalNode(true, e);
-            }else{
+                setStartGoalNode(true, e);
+            } else if (currentTool == Tool.OBSTACLE) {
+                setObstacle(e);
+            } else {
                 txtStatus.Text = wrong + "Please select one tool";
             }
         }
 
-        private void indicateStartGoalNode (bool isGoalNode,MouseEventArgs e) {
+        private void setObstacle (MouseEventArgs e) {
+            if (graph.nodes.Count > 1) {
+                Point mouseClick = new Point(e.Location.X, e.Location.Y);
+                for (int i = 0; i < graph.nodes.Count; i++) {
+                    if (graph.pointInsideNode(graph.nodes[i].type, mouseClick, graph.nodes[i].location)) {
+                        Graph.Node n = graph.getNodeByLocation(graph.nodes[i].type, mouseClick);
+                        if (n.location != startNode.location && n.location != goalNode.location) {
+                            graph.setNodeColor(nodeType, g, n, Graph.obstacleColor);
+                            n.obstacle = true;
+                            n.cost = 9999;
+                            graph.nodes[i] = n;
+                            txtStatus.Text = correct + "New obstacle has been indicated at " + n.value;
+                        } 
+                        break;
+                    } else {
+                        txtStatus.Text = wrong + "You have to click on some node";
+                    }
+                }
+            } else {
+                txtStatus.Text = wrong + "Please add two nodes at least";
+            }
+        }
+
+        private void setStartGoalNode (bool isGoalNode,MouseEventArgs e) {
             if (graph.nodes.Count > 1) {
                 Point mouseClick = new Point(e.Location.X , e.Location.Y);
                 for (int i = 0; i < graph.nodes.Count; i++) {
-                    if (graph.pointInsideNode(mouseClick, graph.nodes[i].location, graph.nodes[i].radius)) {
-                        Graph.Node n = graph.getNodeByLocation(mouseClick);
+                    if (graph.pointInsideNode(graph.nodes[i].type, mouseClick, graph.nodes[i].location)) {
+                        Graph.Node n = graph.getNodeByLocation(graph.nodes[i].type, mouseClick);
+                        n.obstacle = false;
                         if (!isGoalNode){
-                            if (startNode.radius == 0) {
+                            if (startNode.type == Graph.NodeType.NONE) {
                                 startNode = n;
-                                graph.setNodeColor(g, n, Color.LightGray);
+                                graph.setNodeColor(startNode.type, g, startNode, Graph.startNodeColor);
                             } else {
-                                graph.setNodeColor(g, startNode, startNode.color);
+                                graph.setNodeColor(startNode.type, g, startNode, startNode.color);
                                 startNode = n;
-                                graph.setNodeColor(g, n, Color.LightGray);
+                                graph.setNodeColor(startNode.type, g, startNode, Graph.startNodeColor);
                             }
                             txtStatus.Text = correct + "The starting node has been indicated at " + n.value;
                         }else{
-                            if (goalNode.radius == 0) {
+                            if (goalNode.type == Graph.NodeType.NONE) {
                                 goalNode = n;
-                                graph.setNodeColor(g, n, Color.LightGreen);
+                                graph.setNodeColor(goalNode.type, g, goalNode, Graph.goalNodeColor);
                             } else {
-                                graph.setNodeColor(g, goalNode, goalNode.color);
+                                graph.setNodeColor(goalNode.type, g, goalNode, goalNode.color);
                                 goalNode = n;
-                                graph.setNodeColor(g, n, Color.LightGreen);
+                                graph.setNodeColor(goalNode.type, g, goalNode, Graph.goalNodeColor);
                             }
                             txtStatus.Text = correct + "The goal node has been indicated at " + n.value;
                         }
@@ -168,24 +213,24 @@ namespace AI {
 
         private void btnClean_Click (object sender, EventArgs e) {
             for (int i = 0; i < graph.nodes.Count; i++) {
-                if (graph.nodes[i].location != goalNode.location && graph.nodes[i].location != startNode.location) {
-                    g.FillEllipse(new SolidBrush(sheet.BackColor), graph.nodes[i].location.X, graph.nodes[i].location.Y, 40, 40);
-                    g.DrawString(graph.nodes[i].value.ToString(), new Font("Times New Roman", 12), new SolidBrush(Color.Black), new Point(graph.nodes[i].location.X + 12, graph.nodes[i].location.Y + 12));
-                }
+                Graph.Node n = graph.nodes[i];
+                n.obstacle = false;
+                graph.nodes[i] = n;
+                if (graph.nodes[i].location != goalNode.location && graph.nodes[i].location != startNode.location) 
+                    graph.setNodeColor(nodeType, g, graph.nodes[i], sheet.BackColor);
             }
         }
 
         //  Draw a circle (node)
         private void createNode (int radius, MouseEventArgs e) {
             Point mouseClick = new Point(e.Location.X - (radius / 2), e.Location.Y - (radius / 2));
-            int cost = random.Next(100);
-
+            
             g.DrawEllipse(pen, mouseClick.X, mouseClick.Y, radius, radius);
             g.DrawString(nodesCounter.ToString(), new Font("Times New Roman", 12), new SolidBrush(Color.Black), new Point(mouseClick.X + 12, mouseClick.Y + 12));
-            g.DrawString(cost.ToString(), new Font("Times New Roman", 12), new SolidBrush(Color.White), new Point(mouseClick.X + 48, mouseClick.Y + 12));
             
-            graph.addNode(new Graph.Node(mouseClick, nodesCounter, radius, cost, sheet.BackColor));
-            
+            graph.addNode(new Graph.Node(Graph.NodeType.CIRCLE, mouseClick, nodesCounter , 1, sheet.BackColor));
+            graph.setNodeColor(Graph.NodeType.CIRCLE, g, graph.nodes[graph.nodes.Count - 1], sheet.BackColor);
+
             nodesCounter++;
             txtStatus.Text = correct + "New node has been created at " + mouseClick.X + "," + mouseClick.Y;
         }
@@ -198,8 +243,8 @@ namespace AI {
                     // Getting first point
                     line.firstPoint = new Point(e.Location.X - (Lines.Line.pointSize / 2), e.Location.Y - (Lines.Line.pointSize / 2));
                     for (int i = 0; i < graph.nodes.Count; i++) {
-                        if (graph.pointInsideNode(line.firstPoint, graph.nodes[i].location, graph.nodes[i].radius)) {
-                            Graph.Node n = graph.getNodeByLocation(line.firstPoint);
+                        if (graph.pointInsideNode(graph.nodes[i].type, line.firstPoint, graph.nodes[i].location)) {
+                            Graph.Node n = graph.getNodeByLocation(graph.nodes[i].type, line.firstPoint);
                             line.firstNodeIndex = i;
                             line.gotFirstPoint = true;
                             g.FillEllipse(new SolidBrush(Color.Blue), line.firstPoint.X, line.firstPoint.Y , Lines.Line.pointSize, Lines.Line.pointSize);
@@ -216,9 +261,9 @@ namespace AI {
                 // Getting second point
                 line.secondPoint = new Point(e.Location.X - (Lines.Line.pointSize / 2), e.Location.Y - (Lines.Line.pointSize / 2));
                 for (int i = 0; i < graph.nodes.Count; i++) {
-                    if (graph.pointInsideNode(line.secondPoint, graph.nodes[i].location, graph.nodes[i].radius)) {
-                        Graph.Node n = graph.getNodeByLocation(line.secondPoint);
-                        if (n.radius != 0) {
+                    if (graph.pointInsideNode(graph.nodes[i].type, line.secondPoint, graph.nodes[i].location)) {
+                        Graph.Node n = graph.getNodeByLocation(graph.nodes[i].type, line.secondPoint);
+                        if (n.type != Graph.NodeType.NONE) {
                             line.secondNodeIndex = i;
                             g.FillEllipse(new SolidBrush(Color.Blue), e.Location.X - Lines.Line.pointSize, e.Location.Y - Lines.Line.pointSize, Lines.Line.pointSize, Lines.Line.pointSize);
                             txtStatus.Text = correct + "New point has been placed at " + line.secondPoint.X + "," + line.secondPoint.Y;
@@ -233,6 +278,26 @@ namespace AI {
                                                             line.firstNodeIndex, line.secondNodeIndex);
                             lines.add(line);
 
+
+                            // Trim the line in first node
+                            if (graph.nodes[line.firstNodeIndex].location != startNode.location && graph.nodes[line.firstNodeIndex].location != goalNode.location) {
+                                graph.setNodeColor(Graph.NodeType.CIRCLE, g, graph.nodes[line.firstNodeIndex], sheet.BackColor);
+                            } else if(graph.nodes[line.firstNodeIndex].location == startNode.location){
+                                graph.setNodeColor(Graph.NodeType.CIRCLE, g, graph.nodes[line.firstNodeIndex], Graph.startNodeColor);
+                            } else {
+                                graph.setNodeColor(Graph.NodeType.CIRCLE, g, graph.nodes[line.firstNodeIndex], Graph.goalNodeColor);
+                            }
+
+                            // Trim the line in second node
+                            if (graph.nodes[line.secondNodeIndex].location != startNode.location && graph.nodes[line.secondNodeIndex].location != goalNode.location) {
+                                graph.setNodeColor(Graph.NodeType.CIRCLE, g, graph.nodes[line.secondNodeIndex], sheet.BackColor);
+                            } else if (graph.nodes[line.secondNodeIndex].location == startNode.location) {
+                                graph.setNodeColor(Graph.NodeType.CIRCLE, g, graph.nodes[line.secondNodeIndex], Graph.startNodeColor);
+                            } else {
+                                graph.setNodeColor(Graph.NodeType.CIRCLE, g, graph.nodes[line.secondNodeIndex], Graph.goalNodeColor);
+                            }
+
+                            
                             txtStatus.Text = correct + "New edge has been drawn between " + line.firstNodeIndex + " and " + line.secondNodeIndex;
 
                             // Clean everything
@@ -251,6 +316,7 @@ namespace AI {
             btnDFS.Checked = false;
             btnBFS.Checked = false;
             btnHillClimbing.Checked = false;
+            btnAStar.Checked = false;
         }
 
         private void btnDFS_Click (object sender, EventArgs e) {
@@ -286,8 +352,20 @@ namespace AI {
         }
 
 
+        private void btnAStar_Click (object sender, EventArgs e) {
+            uncheckAlgortihmsButtons();
+            if (graph.nodes.Count > 1 && graph.edges.Count > 1) {
+                btnAStar.Checked = true;
+                selectedAlgorithm = Algorithm.AStar;
+            } else {
+                txtStatus.Text = wrong + "Unable to find connected nodes";
+            }
+        }
+
+
+
         private void btnThreadControl_Click (object sender, EventArgs e) {
-            if (startNode.radius != 0 && goalNode.radius != 0) {
+            if (startNode.type != Graph.NodeType.NONE && goalNode.type != Graph.NodeType.NONE) {
                 if (programStatus == ProgramStatus.STOPPED) {
                     if (selectedAlgorithm == Algorithm.NONE) {
                         txtStatus.Text = "Please select one algorithm";
@@ -302,8 +380,24 @@ namespace AI {
                         thread = new Thread(() => alg.BFS(startNode, goalNode, seen));
                         txtStatus.Text = "BFS Starts !";
                     } else if (selectedAlgorithm == Algorithm.HillClimbing) {
+                        // Indicating costs according to the distance between the goal and the current node.
+                        for (int i = 0; i < graph.nodes.Count; i++) {
+                            Graph.Node n = graph.nodes[i];
+                            if (n.obstacle) 
+                                continue;
+                            n.cost = graph.distance(graph.nodes[i], goalNode);
+                            graph.nodes[i] = n;
+                            // Showing the cost
+                            if (nodeType == Graph.NodeType.SQUARE)
+                                g.DrawString(n.cost.ToString(), new Font("Times New Roman", 8), new SolidBrush(Color.White), n.location);
+                            else
+                                g.DrawString(n.cost.ToString(), new Font("Times New Roman", 12), new SolidBrush(Color.White), new Point(n.location.X + 48, n.location.Y + 12));
+                        }
                         thread = new Thread(() => alg.HillClimbing(startNode, goalNode, seen));
                         txtStatus.Text = "Hill Climbing Starts !";
+                    } else if (selectedAlgorithm == Algorithm.AStar) {
+                        thread = new Thread(() => alg.AStar(startNode, goalNode, seen));
+                        txtStatus.Text = "A* Starts !";
                     }
                     programStatus = ProgramStatus.RUNNING;
                     thread.IsBackground = true;
@@ -330,21 +424,43 @@ namespace AI {
             }
         }
 
-
-        private void btnDebug_Click (object sender, EventArgs e) {
+        private void debug () {
+            this.Invoke((MethodInvoker)delegate() {
+                txtStatus.Text = "Loading nodes... ";
+            });
             String nodes = "";
+            int tempNodesCounter = 0, tempEdgesCounter = 0;
             for (int i = 0; i < graph.nodes.Count; i++) {
                 nodes += " Node (" + i + "):\n" +
-                         "Location: " + graph.nodes[i].location.ToString() +
-                         "\n Radius: " + graph.nodes[i].radius.ToString() + "\n";
+                         "Location: " + graph.nodes[i].location.ToString() + "\n" +
+                         "Value: " + graph.nodes[i].value.ToString() + "\n" +
+                         "Cost: " + graph.nodes[i].cost.ToString() + "\n" +
+                         "Obstacle: " + graph.nodes[i].obstacle.ToString() + "\n";
+                tempNodesCounter++;
                 for (int j = 0; j < graph.nodes[i].edges.Count; j++) {
                     nodes += "Edge (" + j + "): " + graph.nodes[i].edges[j] + "\n";
+                    tempEdgesCounter++;
                 }
+                this.Invoke((MethodInvoker)delegate() {
+                    txtStatus.Text = "Collecting data.. Nodes: " + tempNodesCounter + " | Edges:" + tempEdgesCounter;
+                });    
             }
-            if (nodes != "")
-                MessageBox.Show(nodes);
-            else
+            if (nodes != "") {
+                this.Invoke((MethodInvoker)delegate() {
+                    txtStatus.Text = "Preparing...";
+                });
+                debugForm.txtDebug.Text = nodes;
+                debugForm.ShowDialog();
+                this.Invoke((MethodInvoker)delegate() {
+                    txtStatus.Text = "ready !";
+                });
+                
+            } else
                 txtStatus.Text = wrong + "Unable to find nodes";
+        }
+
+        private void btnDebug_Click (object sender, EventArgs e) {
+            new Thread(debug).Start();
         }
 
 
@@ -366,6 +482,16 @@ namespace AI {
             goalNode = new Graph.Node();
             startNode = new Graph.Node();
             alg = new Algorithms(g, graph, this);
+
+            btnLine.Enabled = true;
+            btnCircle.Enabled = true;
+
+            btnLine.Checked = false;
+            btnCircle.Checked = false;
+            btnGrid.Checked = false;
+
+            nodeType = Graph.NodeType.CIRCLE;
+
             g.Clear(sheet.BackColor);
             return true;
         }
@@ -378,11 +504,6 @@ namespace AI {
 
         private void cmbGraphType_KeyPress (object sender, KeyPressEventArgs e) {
             e.Handled = true;
-        }
-
-        private void cmbGraphType_TextChanged (object sender, EventArgs e) {
-            
-            
         }
 
         private void btnDeleteGraph_Click (object sender, EventArgs e) {
@@ -428,6 +549,158 @@ namespace AI {
             }
         }
 
+        private void drawGrid(){
+            nodeType = Graph.NodeType.SQUARE;
+            int squaresCounter = 0;
+            for (int x = 0; x < sheet.Width; x += Graph.Node.size.Width){
+                for (int y = 0; y < sheet.Height; y += Graph.Node.size.Height) {
+                    g.DrawRectangle(pen, new Rectangle(new Point(x, y), new Size(Graph.Node.size.Width, Graph.Node.size.Height)));
+                    graph.addNode(new Graph.Node(Graph.NodeType.SQUARE, new Point(x, y), squaresCounter, 1, sheet.BackColor));
+                    graph.setNodeColor(nodeType, g, graph.nodes[graph.nodes.Count - 1], sheet.BackColor);
+                    squaresCounter++;
+                }
+            }
+
+            #region Explaining
+            /*  Connect Nodes By Edges
+             *  Directed Graph Needs: Right (+21)        , Bottom (+1),  
+             *                        Right-Diagonal(+20), Ops Left-Diagnaol (+22) 
+             *  Undirected Graph Needs: All Directions and all of them are gonna be generated automatically 
+             *  after indicating GraphType UNDIRECTED. (Look at addEdge method in Graph class)  
+                
+             * All Directions are
+               graph.addEdge(i, i - 1);        //  top node
+               graph.addEdge(i, i + 1);        //  bottom node
+
+               graph.addEdge(i, i + 21);       //  right node
+               graph.addEdge(i, i - 21);       //  left node
+
+
+               graph.addEdge(i, i + 20);       // right-diagnaol node
+               graph.addEdge(i, i - 20);       // ops right-diagnaol node
+
+               graph.addEdge(i, i + 22);       // ops left-diagnaol node
+               graph.addEdge(i, i - 22);       // left diagnaol node
+            */
+            #endregion
+            for (int i = 0; i < graph.nodes.Count; i++) {
+                if (i <= 20) {
+                    // left boundary
+                    if (i == 20) {
+                        // bottom-left corner
+                        graph.addEdge(i, i + 21);       // right node
+                        graph.addEdge(i, i + 20);       // right-diagnaol node
+                    } else {
+                        graph.addEdge(i, i + 21);       // right node
+                        graph.addEdge(i, i + 1);        // bottom node
+                        graph.addEdge(i, i + 22);       // ops left-diagnaol node
+                    }
+                } else if (i > 840 && i < 860) {
+                    // right boundary
+                    graph.addEdge(i, i + 1);        // bottom node
+                } else if (i % 21 == 0) {
+                    // top boundary
+                    if (i == 840) {
+                        // top-right corner
+                        graph.addEdge(i, i + 1);        // bottom node
+                    } else {
+                        graph.addEdge(i, i + 1);        // bottom node
+                        graph.addEdge(i, i + 21);       // right node
+                        graph.addEdge(i, i + 22);       // ops left-diagnaol node
+                    }
+                }else if( (i - 20) % 21 == 0){
+                    // bottom boundary
+                    if (i == 860)
+                        continue;
+                    graph.addEdge(i, i + 21);       // right node
+                    graph.addEdge(i, i + 20);       // right-diagnaol node    
+                } else {
+                    // in the center
+                    graph.addEdge(i, i + 1);        // bottom node
+                    graph.addEdge(i, i + 21);       // right node
+                    graph.addEdge(i, i + 20);       // right-diagnaol node   
+                    graph.addEdge(i, i + 22);       // ops left-diagnaol node
+                }
+            }
+            
+            #region Undirected Graph
+            /*  I left this for better understanding to how the nodes are getting connected in UNDIRECTED graph 
+                // Undirected Graph
+                for (int i = 0; i < graph.nodes.Count; i++) {
+                    if (i <= 20) {
+                        // left boundary
+                        if (i != 0 && i != 20) {
+                            // nodes in the center
+                            graph.addEdge(i, i - 1);        // top node
+                            graph.addEdge(i, i + 1);        // bottom node
+                            graph.addEdge(i, i + 20);       // right-diagnaol node
+                            graph.addEdge(i, i + 22);       // ops left-diagnaol node
+                        }else if (i == 0) {
+                            // top-left corner
+                            graph.addEdge(i, i + 1);        // bottom node
+                            graph.addEdge(i, i + 22);       // ops left-diagnaol node
+                        }else if (i == 20) {
+                            // bottom-left corner
+                            graph.addEdge(i, i - 1);        // top node
+                            graph.addEdge(i, i + 20);       // right-diagnaol node
+                        }
+                        graph.addEdge(i, i + 21);       // right node
+                    } else if (i > 840 && i < 860) {
+                        // right boundary
+                        graph.addEdge(i, i - 1);        //  top node
+                        graph.addEdge(i, i + 1);        // bottom node
+                        graph.addEdge(i, i - 21);       //  left node
+                        graph.addEdge(i, i - 22);       // left diagnaol node
+                        graph.addEdge(i, i - 20);       // ops right-diagnaol node
+                    } else if (i % 21 == 0) {
+                        // top boundary
+                        if (i != 0 && i != 840) {
+                            graph.addEdge(i, i + 1);        // bottom node
+                            graph.addEdge(i, i - 21);       // left node
+                            graph.addEdge(i, i + 22);       // ops left-diagnaol node
+                            graph.addEdge(i, i - 20);       // ops right-diagnaol node
+                        } else if(i == 840){
+                            // 840 is the top-right corner
+                            graph.addEdge(i, i - 21);       //  left node
+                            graph.addEdge(i, i + 1);        // bottom node
+                            graph.addEdge(i, i - 20);       // ops right-diagnaol node
+                        }
+                    } else if ((i - 20) % 21 == 0) {
+                        // bottom boundary
+                        if (i == 860)
+                            continue;
+                        graph.addEdge(i, i - 1);        //  top node
+                        graph.addEdge(i, i + 21);       //  right node
+                        graph.addEdge(i, i - 21);       //  left node
+                        graph.addEdge(i, i + 20);       //  right-diagnaol node    
+                        graph.addEdge(i, i - 22);       //  left diagnaol node
+                    } else {
+                        // in the center
+                        graph.addEdge(i, i - 1);        //  top node
+                        graph.addEdge(i, i + 1);        //  bottom node
+
+                        graph.addEdge(i, i + 21);       //  right node
+                        graph.addEdge(i, i - 21);       //  left node
+
+                        graph.addEdge(i, i + 20);       // right-diagnaol node
+                        graph.addEdge(i, i - 20);       // ops right-diagnaol node
+
+                        graph.addEdge(i, i + 22);       // ops left-diagnaol node
+                        graph.addEdge(i, i - 22);       // left diagnaol node
+                    }
+                }
+            }*/
+            #endregion
+        }
+        private void btnGrid_Click (object sender, EventArgs e) {
+            if (deleteGraph("Do you want to delete the current graph ?")) {
+                new Thread(drawGrid).Start();
+                btnLine.Enabled = false;
+                btnCircle.Enabled = false;
+            }
+        }
+
+        
 
 
 
