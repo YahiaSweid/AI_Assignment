@@ -396,7 +396,20 @@ namespace AI {
                         thread = new Thread(() => alg.HillClimbing(startNode, goalNode, seen));
                         txtStatus.Text = "Hill Climbing Starts !";
                     } else if (selectedAlgorithm == Algorithm.AStar) {
-                        thread = new Thread(() => alg.AStar(startNode, goalNode, seen));
+                        // Indicating costs according to the distance between the goal and the current node.
+                        for (int i = 0; i < graph.nodes.Count; i++) {
+                            Graph.Node n = graph.nodes[i];
+                            if (n.obstacle)
+                                continue;
+                            n.cost = graph.distance(graph.nodes[i], goalNode);
+                            graph.nodes[i] = n;
+                            // Showing the cost
+                            if (nodeType == Graph.NodeType.SQUARE)
+                                g.DrawString(n.cost.ToString(), new Font("Times New Roman", 8), new SolidBrush(Color.White), n.location);
+                            else
+                                g.DrawString(n.cost.ToString(), new Font("Times New Roman", 12), new SolidBrush(Color.White), new Point(n.location.X + 48, n.location.Y + 12));
+                        }
+                        thread = new Thread(() => alg.AStar(startNode, goalNode));
                         txtStatus.Text = "A* Starts !";
                     }
                     programStatus = ProgramStatus.RUNNING;

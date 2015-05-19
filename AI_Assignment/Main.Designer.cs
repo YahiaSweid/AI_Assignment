@@ -36,22 +36,17 @@
             this.txtStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.txtResult = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.txtWaitingTime = new System.Windows.Forms.ToolStripTextBox();
-            this.sheet = new System.Windows.Forms.Panel();
             this.btnLine = new System.Windows.Forms.ToolStripButton();
             this.btnCircle = new System.Windows.Forms.ToolStripButton();
             this.btnGrid = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.btnStartNode = new System.Windows.Forms.ToolStripButton();
             this.btnGoalNode = new System.Windows.Forms.ToolStripButton();
             this.btnObstacle = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.btnClean = new System.Windows.Forms.ToolStripButton();
             this.btnDeleteGraph = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.btnDebug = new System.Windows.Forms.ToolStripButton();
             this.btnThreadControl = new System.Windows.Forms.ToolStripButton();
             this.btnAlgorithms = new System.Windows.Forms.ToolStripDropDownButton();
@@ -59,8 +54,13 @@
             this.btnBFS = new System.Windows.Forms.ToolStripMenuItem();
             this.btnHillClimbing = new System.Windows.Forms.ToolStripMenuItem();
             this.btnAStar = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.btnDirectedGraph = new System.Windows.Forms.ToolStripButton();
             this.btnUndirectedGraph = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            this.txtWaitingTime = new System.Windows.Forms.ToolStripTextBox();
+            this.sheet = new System.Windows.Forms.Panel();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -126,56 +126,6 @@
             this.toolStrip1.TabIndex = 7;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripLabel1
-            // 
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(105, 22);
-            this.toolStripLabel1.Text = "Waiting Time (ms)";
-            // 
-            // txtWaitingTime
-            // 
-            this.txtWaitingTime.Name = "txtWaitingTime";
-            this.txtWaitingTime.Size = new System.Drawing.Size(100, 25);
-            this.txtWaitingTime.Text = "500";
-            this.txtWaitingTime.TextChanged += new System.EventHandler(this.txtWaitingTime_TextChanged);
-            // 
-            // sheet
-            // 
-            this.sheet.BackColor = System.Drawing.Color.LightSlateGray;
-            this.sheet.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.sheet.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.sheet.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.sheet.Location = new System.Drawing.Point(0, 25);
-            this.sheet.Name = "sheet";
-            this.sheet.Size = new System.Drawing.Size(820, 417);
-            this.sheet.TabIndex = 8;
-            this.sheet.MouseClick += new System.Windows.Forms.MouseEventHandler(this.sheet_MouseClick);
-            // 
             // btnLine
             // 
             this.btnLine.CheckOnClick = true;
@@ -208,6 +158,11 @@
             this.btnGrid.Size = new System.Drawing.Size(23, 22);
             this.btnGrid.Text = "Grid";
             this.btnGrid.Click += new System.EventHandler(this.btnGrid_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
             // btnStartNode
             // 
@@ -242,6 +197,11 @@
             this.btnObstacle.Text = "toolStripButton1";
             this.btnObstacle.Click += new System.EventHandler(this.btnObstacle_Click);
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
             // btnClean
             // 
             this.btnClean.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -261,6 +221,11 @@
             this.btnDeleteGraph.Size = new System.Drawing.Size(23, 22);
             this.btnDeleteGraph.Text = "toolStripButton1";
             this.btnDeleteGraph.Click += new System.EventHandler(this.btnDeleteGraph_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
             // btnDebug
             // 
@@ -323,11 +288,15 @@
             // btnAStar
             // 
             this.btnAStar.CheckOnClick = true;
-            this.btnAStar.Enabled = false;
             this.btnAStar.Name = "btnAStar";
             this.btnAStar.Size = new System.Drawing.Size(178, 22);
             this.btnAStar.Text = "A*";
             this.btnAStar.Click += new System.EventHandler(this.btnAStar_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
             // 
             // btnDirectedGraph
             // 
@@ -352,6 +321,36 @@
             this.btnUndirectedGraph.Size = new System.Drawing.Size(69, 22);
             this.btnUndirectedGraph.Text = "Undirected";
             this.btnUndirectedGraph.Click += new System.EventHandler(this.btnUndirectedGraph_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(105, 22);
+            this.toolStripLabel1.Text = "Waiting Time (ms)";
+            // 
+            // txtWaitingTime
+            // 
+            this.txtWaitingTime.Name = "txtWaitingTime";
+            this.txtWaitingTime.Size = new System.Drawing.Size(100, 25);
+            this.txtWaitingTime.Text = "500";
+            this.txtWaitingTime.TextChanged += new System.EventHandler(this.txtWaitingTime_TextChanged);
+            // 
+            // sheet
+            // 
+            this.sheet.BackColor = System.Drawing.Color.LightSlateGray;
+            this.sheet.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.sheet.Cursor = System.Windows.Forms.Cursors.Cross;
+            this.sheet.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sheet.Location = new System.Drawing.Point(0, 25);
+            this.sheet.Name = "sheet";
+            this.sheet.Size = new System.Drawing.Size(820, 417);
+            this.sheet.TabIndex = 8;
+            this.sheet.MouseClick += new System.Windows.Forms.MouseEventHandler(this.sheet_MouseClick);
             // 
             // Main
             // 

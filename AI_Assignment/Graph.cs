@@ -20,6 +20,8 @@ namespace AI {
             public List<int> edges;
 
             public int cost;
+            public int fCost ;
+            public int gCost ;
 
             public Color color;
 
@@ -34,6 +36,9 @@ namespace AI {
                 this.location = location;
                 this.value = value;
                 this.cost = cost;
+                this.gCost = 0;
+                this.fCost = 0;
+                
                 this.color = color;
                 this.obstacle = false;
             }

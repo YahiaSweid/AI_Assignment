@@ -17,21 +17,75 @@ namespace AI {
         private List<Graph.Node> children;  // used in Hill Climbing
         private Random random;
 
-        private int DFSCounter;             // used in DFS to check whether it finished or not
-
         public int waitingTime;
         
         public Algorithms (Graphics g,Graph graph, Main frm) {
             this.g = g;
             this.frm = frm;
             this.graph = graph;
-            this.DFSCounter = 1;
-
+        
             random = new Random();
             waitingTime = 500;
         }
 
-        public void AStar (Graph.Node root, Graph.Node goal, bool[] seen) {
+        public void AStar (Graph.Node root, Graph.Node goal) {
+            List<Graph.Node> closedList = new List<Graph.Node>();
+            List<Graph.Node> openList = new List<Graph.Node>();
+            Graph.Node neighbor;
+            int gCost = 0;
+            bool foundGoal = false;
+
+            openList.Add(root);
+            Graph.Node currentNode;
+            while (openList.Count > 0) {
+                currentNode = openList[0];
+                foreach (Graph.Node node in openList) {
+                    if (node.fCost < currentNode.fCost || node.fCost == currentNode.fCost && node.cost < currentNode.cost) {
+                        currentNode = node;
+                    }
+                }
+
+                if (currentNode.location == goal.location) {
+                    foundGoal = true;
+                    break;
+                }
+
+                openList.Remove(currentNode);
+                closedList.Add(currentNode);
+                for (int i = 0; i < currentNode.edges.Count; i++) {
+                    neighbor = graph.getNode(currentNode.edges[i]);
+                    if (neighbor.obstacle || closedList.Contains(neighbor) || openList.Contains(neighbor)) 
+                        continue;
+
+                    gCost = neighbor.gCost + graph.distance(currentNode, neighbor);
+                    
+                    if (!openList.Contains(neighbor) || gCost < neighbor.gCost) {
+                        neighbor.gCost = gCost;
+                        neighbor.fCost = neighbor.gCost + neighbor.cost;
+                        if (!openList.Contains(neighbor)) {
+                            openList.Add(neighbor);
+                            
+                            if (neighbor.location != root.location && neighbor.location != goal.location)
+                                graph.setNodeColor(neighbor.type, g, neighbor, Color.Gold);
+                            frm.Invoke((MethodInvoker)delegate() {
+                                frm.txtResult.Text += neighbor.fCost + " ";
+                            });
+                            Thread.Sleep(waitingTime);
+                      }
+                    }
+
+                }
+
+            }
+            frm.Invoke((MethodInvoker)delegate() {
+                if (foundGoal) {
+                    frm.txtStatus.Text = "A* reached the goal !";
+                } else {
+                    frm.txtStatus.Text = "A* Finished !";
+                }
+                frm.programStatus = ProgramStatus.STOPPED;
+                frm.btnThreadControl.Image = new Bitmap(Properties.Resources.Play);
+            });
 
         }
 
@@ -133,9 +187,8 @@ namespace AI {
                         frm.txtStatus.Text = "DFS reached the goal !";
                         frm.programStatus = ProgramStatus.STOPPED;
                         frm.btnThreadControl.Image = new Bitmap(Properties.Resources.Play);
-                        DFSCounter = 1;
                     }
-                    DFSCounter++;
+                    
                 }
             }
         }
