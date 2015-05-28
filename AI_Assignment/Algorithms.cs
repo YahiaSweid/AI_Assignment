@@ -175,12 +175,9 @@ namespace AI {
                 Graph.Node n = graph.getNode(root.edges[i]);
                 if (!seen[root.edges[i]]) {
                     seen[root.edges[i]] = true;
-                    DFS(n, goal,seen);
-                    if (frm.programStatus == ProgramStatus.STOPPED)
-                        return;
-                    Thread.Sleep(waitingTime);
                     if (n.location != root.location && n.location != goal.location && !n.obstacle)
                         graph.setNodeColor(n.type, g, n, Color.Gold);
+                    Thread.Sleep(waitingTime);
                     
                     frm.txtResult.Text += n.value + " ";
                     if (n.location == goal.location) {
@@ -188,8 +185,16 @@ namespace AI {
                         frm.programStatus = ProgramStatus.STOPPED;
                         frm.btnThreadControl.Image = new Bitmap(Properties.Resources.Play);
                     }
+                    DFS(n, goal,seen);
+                    if (frm.programStatus == ProgramStatus.STOPPED)
+                        return;
                     
+                    
+
                 }
+                   
+                    
+                    
             }
         }
 
